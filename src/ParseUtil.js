@@ -1,11 +1,12 @@
 /*
  * ParseUtil javascript Library v1.0.0
- * Released under the MIT license
+ * Released under the MIT license, http://github.com/requirejs/requirejs/LICENSE
  * Date: 2015-11-24 00:00:00
+ * Author: frewen
+ * Site: http://www.idea00.com/
  */
 
-
-"use strict";
+"use stract";
 
 (function(){
 	var ParseUtil={
@@ -66,7 +67,7 @@
 		/*XHTML Tag*/
 		rxhtmlTag : /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 
-		// We have to close these tags to support XHTML (#13200)
+		//XHTML格式
 		wrapMap : {
 			option: [ 1, "<select multiple='multiple'>", "</select>" ],
 			legend: [ 1, "<fieldset>", "</fieldset>" ],
@@ -112,26 +113,25 @@
 			// 将字符串转为DOM节点
 			} else {
 				tmp = safe.appendChild( document.createElement("div") );
-				// Deserialize a standard representation
+				
 				tag = (this.rtagName.exec( elem ) || [ "", "" ])[1].toLowerCase();
 				wrap = this.wrapMap[tag] || this.wrapMap._default;
 
 				tmp.innerHTML = wrap[1] + elem.replace( this.rxhtmlTag, "<$1></$2>" ) + wrap[2];
-				// Descend through wrappers to the right content
+				
 				j = wrap[0];
 				while ( j-- ) {
 					tmp = tmp.lastChild;
 				}
-				// Manually add leading whitespace removed by IE
+				// 兼容IE
 				if ( !this.leadingWhitespace && this.rleadingWhitespace.test( elem ) ) {
 					nodes.push( document.createTextNode( this.rleadingWhitespace.exec( elem )[0] ) );
 				}
-				// Remove IE's autoinserted <tbody> from table fragments
 				if ( !tbody ) {
-					// String was a <table>, *may* have spurious <tbody>
+
 					elem = tag === "table" && !this.rtbody.test( elem ) ?
 						tmp.firstChild :
-						// String was a bare <thead> or <tfoot>
+
 						wrap[1] === "<table>" && !this.rtbody.test( elem ) ?
 							tmp :
 							0;
@@ -144,22 +144,20 @@
 					}
 				}
 				this.merge( nodes, tmp.childNodes );
-				// Fix #12392 for WebKit and IE > 9
+				// for WebKit and IE > 9
 				tmp.textContent = "";
-				// Fix #12392 for oldIE
+				// for oldIE
 				while ( tmp.firstChild ) {
 					tmp.removeChild( tmp.firstChild );
 				}
-				// Remember the top-level container for proper cleanup
 				tmp = safe.lastChild;
 			}
 
-			// Fix #11356: Clear elements from fragment
+
 			if ( tmp ) {
 				safe.removeChild( tmp );
 			}
-			// Reset defaultChecked for any radios and checkboxes
-			// about to be appended to the DOM in IE 6/7 (#8060)
+
 			if ( !this.appendChecked ) {
 				var _this=this;
 				var fixDefaultChecked=function( elem ) {
@@ -200,8 +198,7 @@
 				length = elems.length,
 				callbackExpect = !invert;
 
-			// Go through the array, only saving the items
-			// that pass the validator function
+
 			for ( ; i < length; i++ ) {
 				callbackInverse = !callback( elems[ i ], i );
 				if ( callbackInverse !== callbackExpect ) {
@@ -227,46 +224,41 @@
 
 		rvalidtokens : /(,)|(\[|{)|(}|])|"(?:[^"\\\r\n]|\\["\\\/bfnrt]|\\u[\da-fA-F]{4})*"\s*:?|true|false|null|-?(?!0\d)\d+(?:\.\d+|)(?:[eE][+-]?\d+|)/g,
 		parseJSON:function( data ) {
-			// Attempt to parse using the native JSON parser first
+			
 			if ( window.JSON && window.JSON.parse ) {
-				// Support: Android 2.3
-				// Workaround failure to string-cast null input
+				
 				return window.JSON.parse( data + "" );
 			}
 			var requireNonComma,
 				depth = null,
 				str = (data+'').replace(/\s/g,'');
-			// Guard against invalid (and possibly dangerous) input by ensuring that nothing remains
-			// after removing valid tokens
+			
 			return str && !str.replace( this.rvalidtokens, function( token, comma, open, close ) {
-				// Force termination if we see a misplaced comma
+				
 				if ( requireNonComma && comma ) {
 					depth = 0;
 				}
-				// Perform no more replacements after returning to outermost depth
+				
 				if ( depth === 0 ) {
 					return token;
 				}
-				// Commas must not follow "[", "{", or ","
+				
 				requireNonComma = open || comma;
-				// Determine new depth
-				// array/object open ("[" or "{"): depth += true - false (increment)
-				// array/object close ("]" or "}"): depth += false - true (decrement)
-				// other cases ("," or primitive): depth += true - true (numeric cast)
+				
 				depth += !close - !open;
-				// Remove this token
+				
 				return "";
 			}) ?
 				( Function( "return " + str ) )() : console.log( "Invalid JSON: " + data );
 		},
-		// Cross-browser xml parsing
+		
 		parseXML:function( data ) {
 			var xml, tmp;
 			if ( !data || typeof data !== "string" ) {
 				return null;
 			}
 			try {
-				if ( window.DOMParser ) { // Standard
+				if ( window.DOMParser ) { 
 					tmp = new DOMParser();
 					xml = tmp.parseFromString( data, "text/xml" );
 				} else { // IE
