@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>LoongParseHTML</title>
+	<script type="text/javascript" src="../src/ParseUtil.js"></script>
+</head>
+<body>
+	<div id="box1"></div>
+	<div id="box2"></div>
+	<div id="box3"></div>
+	<script type="text/javascript">
+	var dom=ParseUtil.parseHTML('<div class="username">user</div><div class="age">18</div>');
+	document.getElementById('box1').appendChild(dom);
+
+	var xml=ParseUtil.parseXML('<?xml version="1.0" encoding="UTF-8"?><root><username>user</username><age>18</age></root>');
+	console.log(xml.getElementsByTagName('username')[0].innerHTML+':'+
+				xml.getElementsByTagName('age')[0].innerHTML);
+
+	var json=ParseUtil.parseJSON('{"username":"user","age":18}');
+	console.log(json.username+':'+json.age);
+	</script>
+</body>
+</html>
