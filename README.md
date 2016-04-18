@@ -34,7 +34,7 @@
 
 ## License
 
-MIT
+Released under the MIT license, http://github.com/requirejs/requirejs/LICENSE
 
 ## 更多项目
 
